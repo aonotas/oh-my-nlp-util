@@ -105,7 +105,8 @@ def output_raw_text(wiki_pages, output_file):
     f = open(output_file, "w")
     for i, page in enumerate(wiki_pages):
         wiki_id, title, text = page
-        one_line = title.encode("utf-8") + " " + text.encode("utf-8").replace("\n", " ")
+        one_line = title.encode("utf-8") + "\n"
+        one_line += text.encode("utf-8")
         f.write(one_line + "\n")
         if i % 1000 == 0:
             logging.info("[write] " + str(i))
@@ -136,6 +137,6 @@ if __name__ == '__main__':
         output_file = dump_file.replace(".xml.bz2", "_raw.txt")
         wiki_pages = extract_pages(dump_file=dump_file)
         output_raw_text(wiki_pages, output_file)
-        
+
     elif args.mode == "paragraphs":
         extract_paragraphs(dump_file=dump_file)
