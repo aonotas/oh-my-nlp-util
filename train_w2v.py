@@ -26,7 +26,7 @@ def load_w2v_model(model_filename):
     return model
 
 def main(args):
-    model = train_w2v()
+    model = train_w2v(args)
     model.save(args.output)
 
 if __name__ == '__main__':
