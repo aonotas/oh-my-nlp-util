@@ -29,6 +29,7 @@ def _process_page_keepmarkup(page):
     if is_redirect_page(text):
         return None
     # text = _wiki_to_raw(text)
+    text = text.replace(u'\n', u' ')
     return wiki_id, title, text
 
 def _process_page2paragrahs(page):
@@ -59,7 +60,7 @@ def extract_pages(dump_file, flag_keepmarkup=False):
         func_name = _process_page_keepmarkup
     else:
         func_name = _process_page
-    
+
     for page in imap_func(func_name, reader):
         if page is None:
             continue
