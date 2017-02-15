@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     elif args.mode == "raw_text_keep_markup":
         output_file = dump_file.replace(".xml.bz2", "_raw_keepmarkup.txt")
-        wiki_pages = extract_pages(dump_file=dump_file)
+        wiki_pages = extract_pages(dump_file=dump_file, flag_keepmarkup=True)
         output_raw_text(wiki_pages, output_file)
 
     elif args.mode == "paragraphs":
