@@ -24,6 +24,13 @@ def _process_page(page):
     text = _wiki_to_raw(text)
     return wiki_id, title, text
 
+def _process_page_keepmarkup(page):
+    wiki_id, title, text = page
+    if is_redirect_page(text):
+        return None
+    # text = _wiki_to_raw(text)
+    return wiki_id, title, text
+
 def _process_page2paragrahs(page):
     wiki_id, title, text = page
     sections = []
@@ -41,14 +48,19 @@ def _process_page2paragrahs(page):
         sections.append(section)
     return wiki_id, title, text, sections
 
-def extract_pages(dump_file):
+def extract_pages(dump_file, flag_keepmarkup=False):
     logger.info('Starting to read dump file...')
     reader = WikiDumpIter(dump_file)
     wiki_pages = []
     pool = multiprocessing.pool.Pool(N_CPU)
     imap_func = functools.partial(pool.imap_unordered, chunksize=100)
 
-    for page in imap_func(_process_page, reader):
+    if flag_keepmarkup:
+        func_name = _process_page_keepmarkup
+    else:
+        func_name = _process_page
+    
+    for page in imap_func(func_name, reader):
         if page is None:
             continue
         wiki_pages.append(page)
@@ -135,6 +147,12 @@ if __name__ == '__main__':
 
     if args.mode == "raw_text":
         output_file = dump_file.replace(".xml.bz2", "_raw.txt")
+        wiki_pages = extract_pages(dump_file=dump_file)
+        output_raw_text(wiki_pages, output_file)
+
+
+    elif args.mode == "raw_text_keep_markup":
+        output_file = dump_file.replace(".xml.bz2", "_raw_keepmarkup.txt")
         wiki_pages = extract_pages(dump_file=dump_file)
         output_raw_text(wiki_pages, output_file)
 
