@@ -69,8 +69,8 @@ def remove_markup(text):
         old, iters = text, iters + 1
         text = re.sub(RE_P0, "", text)  # remove comments
         text = re.sub(RE_P1, '', text)  # remove footnotes
-        text = re.sub(RE_P3, '', text)  # remove template
-        text = re.sub(RE_P4, '', text)  # remove template
+        # text = re.sub(RE_P3, '', text)  # remove template
+        # text = re.sub(RE_P4, '', text)  # remove template
         text = re.sub(RE_P9, "", text)  # remove outside links
         text = re.sub(RE_P10, "", text)  # remove math content
         text = re.sub(RE_P11, "", text)  # remove all remaining tags
@@ -93,3 +93,56 @@ def remove_markup(text):
     # text = text.replace('[', '').replace(']', '')  # promote all remaining markup to plain text
 
     return text
+
+
+def remove_template(s):
+    """Remove template wikimedia markup.
+    Return a copy of `s` with all the wikimedia markup template removed. See
+    http://meta.wikimedia.org/wiki/Help:Template for wikimedia templates
+    details.
+    Note: Since template can be nested, it is difficult remove them using
+    regular expresssions.
+    """
+
+    # Find the start and end position of each template by finding the opening
+    # '{{' and closing '}}'
+    n_open, n_close = 0, 0
+    starts, ends = [], []
+    in_template = False
+    prev_c = None
+    for i, c in enumerate(iter(s)):
+        if not in_template:
+            if c == '{' and c == prev_c:
+                starts.append(i - 1)
+                in_template = True
+                n_open = 1
+        if in_template:
+            if c == '{':
+                n_open += 1
+            elif c == '}':
+                n_close += 1
+            if n_open == n_close:
+                ends.append(i)
+                in_template = False
+                n_open, n_close = 0, 0
+        prev_c = c
+
+    # Remove all the templates
+    s = ''.join([s[end + 1:start] for start, end in
+                 zip(starts + [None], [-1] + ends)])
+
+    return s
+
+
+def remove_file(s):
+    """Remove the 'File:' and 'Image:' markup, keeping the file caption.
+    Return a copy of `s` with all the 'File:' and 'Image:' markup replaced by
+    their corresponding captions. See http://www.mediawiki.org/wiki/Help:Images
+    for the markup details.
+    """
+    # The regex RE_P15 match a File: or Image: markup
+    for match in re.finditer(RE_P15, s):
+        m = match.group(0)
+        caption = m[:-2].split('|')[-1]
+        s = s.replace(m, caption, 1)
+    return s
