@@ -37,6 +37,8 @@ RE_P14 = re.compile('\[\[Category:[^][]*\]\]', re.UNICODE)  # categories
 # Remove File and Image template
 RE_P15 = re.compile('\[\[([fF]ile:|[iI]mage)[^]]*(\]\])', re.UNICODE)
 
+RE_MY_LINK = re.compile('\[\[([^|]+\|)?([^]]*)\]\]', re.UNICODE)
+
 # MediaWiki namespaces (https://www.mediawiki.org/wiki/Manual:Namespace) that
 # ought to be ignored
 IGNORED_NAMESPACES = ['Wikipedia', 'Category', 'File', 'Portal', 'Template',
@@ -64,6 +66,7 @@ def remove_markup(text):
     # for as long as something changes.
     text = remove_template(text)
     text = remove_file(text)
+    text = replace_link_to_phrase(text)
     iters = 0
     while True:
         old, iters = text, iters + 1
@@ -145,4 +148,11 @@ def remove_file(s):
         m = match.group(0)
         caption = m[:-2].split('|')[-1]
         s = s.replace(m, caption, 1)
+    return s
+
+def replace_link_to_phrase(s):
+    for match in re.finditer(RE_MY_LINK, s):
+        m = match.group(0)
+        phrase = u'-'.join(match.groups()[-1].split(u' '))
+        s = s.replace(m, phrase, 1)
     return s
