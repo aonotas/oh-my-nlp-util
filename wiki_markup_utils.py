@@ -37,7 +37,7 @@ RE_P14 = re.compile('\[\[Category:[^][]*\]\]', re.UNICODE)  # categories
 # Remove File and Image template
 RE_P15 = re.compile('\[\[([fF]ile:|[iI]mage)[^]]*(\]\])', re.UNICODE)
 
-RE_MY_LINK = re.compile('\[\[([^|]+\|)?([^]]*)\]\]', re.UNICODE)
+RE_MY_LINK = re.compile('\[\[([^]]+\|)?([^]]+)\]\]', re.UNICODE)
 
 # MediaWiki namespaces (https://www.mediawiki.org/wiki/Manual:Namespace) that
 # ought to be ignored
@@ -159,5 +159,5 @@ def replace_link_to_phrase(s):
 
 
 if __name__ == '__main__':
-    words = "'''Anarchism''' is a [[political philosophy]] that advocates [self-governed] societies based on voluntary institutions. These are often described as [stateless societies], although several authors have defined them more specifically as institutions based on non-[hierarchical] [free associations]. Anarchism considers the [state] to be undesirable, unnecessary, and harmful, because anarchists generally believe that human beings are capable of managing their own affairs on the basis of creativity, cooperation, and mutual respect, and when making individual decisions they are taking into account the concerns of others and the well-being of society."
+    words = "'''Anarchism''' is a [[political philosophy]] that advocates [[self-governance|self-governed]] societies based on voluntary institutions. These are often described as [[stateless society|stateless societies]],"
     print replace_link_to_phrase(words)
