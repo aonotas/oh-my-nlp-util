@@ -13,6 +13,7 @@ N_CPU = multiprocessing.cpu_count()
 logger = logging.getLogger(__name__)
 
 from prettyprint import pp
+from wiki_markup_utils import filter_wiki
 
 def _wiki_to_raw(text):
     return gensim.corpora.wikicorpus.filter_wiki(text)
@@ -29,6 +30,7 @@ def _process_page_keepmarkup(page):
     if is_redirect_page(text):
         return None
     # text = _wiki_to_raw(text)
+    text = filter_wiki(text)
     text = text.replace(u'\n', u' ')
     return wiki_id, title, text
 
@@ -118,7 +120,8 @@ def output_raw_text(wiki_pages, output_file):
     f = open(output_file, "w")
     for i, page in enumerate(wiki_pages):
         wiki_id, title, text = page
-        one_line = title.encode("utf-8") + "\n"
+        # one_line = title.encode("utf-8") + "\n"
+        one_line = title.encode("utf-8") + " "
         one_line += text.encode("utf-8")
         f.write(one_line + "\n")
         if i % 1000 == 0:
