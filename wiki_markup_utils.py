@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import bz2
 import logging
 import re
@@ -88,8 +91,5 @@ def remove_markup(text):
     # the following is needed to make the tokenizer see '[[socialist]]s' as a single word 'socialists'
     # TODO is this really desirable?
     # text = text.replace('[', '').replace(']', '')  # promote all remaining markup to plain text
-
-    # []内の文字を split => join _
-
 
     return text
