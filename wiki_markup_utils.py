@@ -38,7 +38,7 @@ RE_P14 = re.compile('\[\[Category:[^][]*\]\]', re.UNICODE)  # categories
 RE_P15 = re.compile('\[\[([fF]ile:|[iI]mage)[^]]*(\]\])', re.UNICODE)
 
 RE_MY_LINK = re.compile('\[\[([^]]+\|)?([^]]+)\]\]', re.UNICODE)
-
+RE_MY_LINK2 = re.compile("'''([^']+)'''", re.UNICODE)
 # MediaWiki namespaces (https://www.mediawiki.org/wiki/Manual:Namespace) that
 # ought to be ignored
 IGNORED_NAMESPACES = ['Wikipedia', 'Category', 'File', 'Portal', 'Template',
@@ -67,6 +67,7 @@ def remove_markup(text):
     text = remove_template(text)
     text = remove_file(text)
     text = replace_link_to_phrase(text)
+    text = replace_link_to_phrase2(text)
     iters = 0
     while True:
         old, iters = text, iters + 1
@@ -157,7 +158,13 @@ def replace_link_to_phrase(s):
         s = s.replace(m, phrase, 1)
     return s
 
+def replace_link_to_phrase2(s):
+    for match in re.finditer(RE_MY_LINK2, s):
+        m = match.group(0)
+        phrase = u'-'.join(match.groups()[-1].split(u' '))
+        s = s.replace(m, phrase, 1)
+    return s
 
 if __name__ == '__main__':
-    words = "'''Anarchism''' is a [[political philosophy]] that advocates [[self-governance|self-governed]] societies based on voluntary institutions. These are often described as [[stateless society|stateless societies]],"
-    print replace_link_to_phrase(words)
+    words = "The '''Illinois Mathematics and Science Academy''', or '''IMSA''', is a three-year residential public high school located in Aurora,-Illinois, United States, with an enrollment of approximately 650 students. Enrollment is generally offered to incoming sophomores, although younger students who have had the equivalent of one year of Algebra and a 9th grade science equivalent are eligible to apply. All applicants undergo a competitive admissions process involving the review of grades"
+    print replace_link_to_phrase2(words)
