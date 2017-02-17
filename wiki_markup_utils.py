@@ -80,8 +80,8 @@ def remove_markup(text):
         text = re.sub(RE_P14, '', text)  # remove categories
         text = re.sub(RE_P5, '\\3', text)  # remove urls, keep description
         text = re.sub(RE_P6, '\\2', text)  # simplify links, keep description only
-        text = re.sub(RE_P7, '\\3', text)  
-        text = re.sub(RE_P8, '\\3', text)  
+        # text = re.sub(RE_P7, '\\3', text)  
+        # text = re.sub(RE_P8, '\\3', text)  
         # remove table markup
         text = text.replace('||', '\n|')  # each table cell on a separate line
         text = re.sub(RE_P12, '\n', text)  # remove formatting lines
@@ -156,3 +156,8 @@ def replace_link_to_phrase(s):
         phrase = u'-'.join(match.groups()[-1].split(u' '))
         s = s.replace(m, phrase, 1)
     return s
+
+
+if __name__ == '__main__':
+    words = "'''Anarchism''' is a [[political philosophy]] that advocates [self-governed] societies based on voluntary institutions. These are often described as [stateless societies], although several authors have defined them more specifically as institutions based on non-[hierarchical] [free associations]. Anarchism considers the [state] to be undesirable, unnecessary, and harmful, because anarchists generally believe that human beings are capable of managing their own affairs on the basis of creativity, cooperation, and mutual respect, and when making individual decisions they are taking into account the concerns of others and the well-being of society."
+    print replace_link_to_phrase(words)
