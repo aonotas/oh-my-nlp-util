@@ -18,7 +18,7 @@ def load_text(filename):
 def train_w2v(args):
     data = load_text(args.input)
     sg = 1 if args.model == "skipgram" else 0
-    model = gensim.models.word2vec.Word2Vec(data, sg=sg, size=args.size, window=args.window, min_count=args.min_count, workers=workers, negative=args.negative, hs=0, sample=1e-4, iter=1)
+    model = gensim.models.word2vec.Word2Vec(data, sg=sg, size=args.size, window=args.window, min_count=args.min_count, workers=workers, negative=args.negative, hs=0, sample=1e-4, iter=args.iteration)
     return model
 
 def load_w2v_model(model_filename):
@@ -35,6 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--model', type=str, dest='model', default='skipgram', help='model')
     parser.add_argument('--negative', type=int, dest='negative', default=5, help='negative')
     parser.add_argument('--min_count', type=int, dest='min_count', default=10, help='min_count')
+    parser.add_argument('--iteration', type=int, dest='iteration', default=1, help='iteration')
     parser.add_argument('--window', type=int, dest='window', default=5, help='window')
     parser.add_argument('--size', dest='size', default=200, type=int, help='size')
     parser.add_argument('--input', dest='input', type=str, default='', help='input')
